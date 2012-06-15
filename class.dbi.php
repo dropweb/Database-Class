@@ -1,5 +1,10 @@
 <?php 
 
+/*
+ * Standard database class that includes memcaching
+ * 
+ */
+
 class db
 {
 	
@@ -9,8 +14,8 @@ class db
 	const PASS = '';
 	
 	// Enter the live and dev database names here
-	const LIVE_DB = ''; 
-	const DEV_DB = ''; 
+	const LIVE_DB 	= ''; 
+	const DEV_DB 	= ''; 
 	
 	// So that we don't confuse cached queries from different sites
 	const memcachePrefix = '';
@@ -37,7 +42,8 @@ class db
 		// Set the public debug var
 		$this->debug 		= $debug;
 		
-		// new Memcache Object
+		// new memCached Object
+		// memCached must be installed and on port 11211 (or change the port number here)
 		$this->memcache = new Memcache;
 		$this->memcache->connect('localhost', 11211);
 		
@@ -45,7 +51,7 @@ class db
 		if ($live) {
 			$this->database = LIVE_DB;
 		} else {
-			$this->database = DED_DB;
+			$this->database = DEV_DB;
 		}
 		
 		// Make the mysqli connection
@@ -222,18 +228,6 @@ class db
 				}
 				
 				$res =  $this -> grabStuff($query, $writeCache);
-				
-				if ($this->debug) {
-					
-					/*self::showDebug('Here is the resulting data array:', 'blue');
-					
-					if($this->debug) {
-						echo '<br />';
-					}
-					
-					print_r($res);
-					*/
-				}
 				
 				return $res;
 				
